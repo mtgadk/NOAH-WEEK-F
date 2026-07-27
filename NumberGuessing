@@ -1,0 +1,19 @@
+print ("guess a number 1-100")
+from random import randint
+cpuChoice=randint(1,100)
+guesscount=0
+looping=True
+while looping==True:
+    playerguess=input()
+    playerguess=int (playerguess)
+    if playerguess==cpuChoice:
+        print ("You WIN")
+        looping=False
+    if playerguess>cpuChoice:
+        print ("lower")
+    if playerguess<cpuChoice:
+        print ("higher")
+    guesscount=guesscount+1
+    if guesscount==7:
+        print ("you lose, your bad")
+        looping=False
