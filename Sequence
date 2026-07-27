@@ -1,0 +1,10 @@
+evennumber=0
+looping=True
+while looping==True:
+        evennumber=evennumber+2
+        print (evennumber)
+        if evennumber==10000:
+                looping=False
+
+for i in range(0,10001,2):
+        print (i)
