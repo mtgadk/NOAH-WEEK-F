@@ -3,10 +3,13 @@ x=input ()
 x=int(x)
 y=input()
 y=float(y)
-print (x+y)
-print (x*y+9)
-print (y/x+3)
-print (x*x*x*y)
-print (y/x)
-print (y/x*y+y/x)
-print (y*x)
+print ("do you want to use subtraction, multiplaction, addition, or division?")
+z=input ()
+if z== ("subtraction"):
+    print (x-y)
+if z== ("multiplication"):
+    print (x*y)
+if z== ("addition"):
+    print (x+y)
+if z== ("division"):
+    print (x/y)
