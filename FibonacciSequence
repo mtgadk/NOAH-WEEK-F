@@ -1,0 +1,17 @@
+print   ("How many numbers of the Fibonacci sequence do you want to generate?")
+x=int( input () )
+
+list=[0,1]
+i=list[0]+list[1]
+#list.append (list[0]+list[1])
+#list.append (list[1]+list[2])
+#list.append (list[2]+list[3])
+#list.append (list[3]+list[4])
+#list.append (list[4]+list[5])
+#list.append (list[5]+list[6])
+
+for i in range  (1,x,1):
+    list.append (list[i]+list[i-1])
+
+
+print (list)   

@@ -1,0 +1,28 @@
+looping=True
+shoppinglist=[]
+
+
+while looping==True:
+    print ("Do you want to add or remove items")
+    userchoice=input()
+   
+   
+    if userchoice==("add"):
+        print ("add food to shopping list")
+        add=input ()
+        shoppinglist.append (add)
+    
+    elif userchoice==("remove"):
+        print ("what would you like to remove")
+        remove=input ()
+        if remove in shoppinglist:
+            shoppinglist.remove (remove) 
+        else:
+            print ("not in list")
+    else:
+        print ("invalid option try again")
+        
+    print (shoppinglist)
+    print ("Do you want to quit?")
+    if input ()==("yes"):
+        looping=False

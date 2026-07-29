@@ -1,10 +1,4 @@
-evennumber=0
-looping=True
-while looping==True:
-        evennumber=evennumber+2
-        print (evennumber)
-        if evennumber==10000:
-                looping=False
+list=[5, 99, 35, 6, 12, 4, 89, 6]
 
-for i in range(0,10001,2):
-        print (i)
+for i in range (0,len(list), 1):
+        print (list[i])

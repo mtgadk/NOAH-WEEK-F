@@ -14,6 +14,6 @@ while looping==True:
     if playerguess<cpuChoice:
         print ("higher")
     guesscount=guesscount+1
-    if guesscount==7:
-        print ("you lose, your bad")
+    if guesscount==8:
+        print ("YOU LOSEEEEEEEEEE")
         looping=False
