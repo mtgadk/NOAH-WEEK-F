@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Neon Shooter</title>
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background:#000;
+    cursor:crosshair;
+}
+canvas{
+    display:block;
+}
+#ui{
+    position:absolute;
+    top:10px;
+    left:10px;
+    color:white;
+    font-family:Arial;
+    font-size:22px;
+    text-shadow:0 0 10px cyan;
+}
+</style>
+</head>
+<body>
+
+<div id="ui">
+Score: <span id="score">0</span>
+<br>
+Health: <span id="health">100</span>
+</div>
+
+<canvas id="game"></canvas>
+
+<script>
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+}
+resize();
+onresize=resize;
+
+let mouse={x:0,y:0};
+
+document.onmousemove=e=>{
+mouse.x=e.clientX;
+mouse.y=e.clientY;
+};
+
+const keys={};
+
+onkeydown=e=>keys[e.key.toLowerCase()]=true;
+onkeyup=e=>keys[e.key.toLowerCase()]=false;
+
+let bullets=[];
+let enemies=[];
+let particles=[];
+let stars=[];
+
+for(let i=0;i<250;i++){
+stars.push({
+x:Math.random()*innerWidth,
+y:Math.random()*innerHeight,
+r:Math.random()*2,
+s:0.3+Math.random()*1
+});
+}
+
+const player={
+x:innerWidth/2,
+y:innerHeight/2,
+r:18,
+speed:5,
+health:100
+};
+
+let score=0;
+
+onclick=()=>{
+let a=Math.atan2(mouse.y-player.y,mouse.x-player.x);
+bullets.push({
+x:player.x,
+y:player.y,
+vx:Math.cos(a)*11,
+vy:Math.sin(a)*11,
+life:80
+});
+};
+
+function spawnEnemy(){
+let side=Math.floor(Math.random()*4);
+let x,y;
+
+if(side==0){
+x=Math.random()*canvas.width;
+y=-30;
+}
+if(side==1){
+x=canvas.width+30;
+y=Math.random()*canvas.height;
+}
+if(side==2){
+x=Math.random()*canvas.width;
+y=canvas.height+30;
+}
+if(side==3){
+x=-30;
+y=Math.random()*canvas.height;
+}
+
+enemies.push({
+x,y,
+r:16,
+speed:1+Math.random()*2
+});
+}
+
+setInterval(spawnEnemy,700);
+
+function explosion(x,y,color){
+for(let i=0;i<20;i++){
+particles.push({
+x,y,
+vx:(Math.random()-0.5)*8,
+vy:(Math.random()-0.5)*8,
+life:40,
+color
+});
+}
+}
+
+function update(){
+
+if(keys.w)player.y-=player.speed;
+if(keys.s)player.y+=player.speed;
+if(keys.a)player.x-=player.speed;
+if(keys.d)player.x+=player.speed;
+
+player.x=Math.max(player.r,Math.min(canvas.width-player.r,player.x));
+player.y=Math.max(player.r,Math.min(canvas.height-player.r,player.y));
+
+bullets.forEach((b,i)=>{
+b.x+=b.vx;
+b.y+=b.vy;
+b.life--;
+
+if(b.life<=0)bullets.splice(i,1);
+});
+
+enemies.forEach((e,ei)=>{
+
+let a=Math.atan2(player.y-e.y,player.x-e.x);
+
+e.x+=Math.cos(a)*e.speed;
+e.y+=Math.sin(a)*e.speed;
+
+let d=Math.hypot(player.x-e.x,player.y-e.y);
+
+if(d<player.r+e.r){
+
+player.health-=0.3;
+
+if(player.health<=0){
+alert("Game Over! Score: "+score);
+location.reload();
+}
+
+}
+
+bullets.forEach((b,bi)=>{
+
+let d=Math.hypot(b.x-e.x,b.y-e.y);
+
+if(d<e.r){
+
+explosion(e.x,e.y,"#00ffff");
+
+enemies.splice(ei,1);
+bullets.splice(bi,1);
+
+score+=10;
+
+}
+
+});
+
+});
+
+particles.forEach((p,i)=>{
+
+p.x+=p.vx;
+p.y+=p.vy;
+p.life--;
+
+if(p.life<=0)particles.splice(i,1);
+
+});
+
+document.getElementById("score").textContent=score;
+document.getElementById("health").textContent=Math.floor(player.health);
+
+}
+
+function draw(){
+
+ctx.fillStyle="#050510";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+stars.forEach(s=>{
+ctx.fillStyle="white";
+ctx.globalAlpha=.4;
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.r,0,7);
+ctx.fill();
+
+s.y+=s.s;
+if(s.y>canvas.height)s.y=0;
+});
+
+ctx.globalAlpha=1;
+
+let angle=Math.atan2(mouse.y-player.y,mouse.x-player.x);
+
+ctx.save();
+ctx.translate(player.x,player.y);
+ctx.rotate(angle);
+
+ctx.shadowBlur=25;
+ctx.shadowColor="cyan";
+
+ctx.fillStyle="#00ffff";
+ctx.beginPath();
+ctx.arc(0,0,18,0,7);
+ctx.fill();
+
+ctx.fillRect(0,-4,28,8);
+
+ctx.restore();
+
+bullets.forEach(b=>{
+
+ctx.shadowBlur=20;
+ctx.shadowColor="#00ffff";
+ctx.fillStyle="#00ffff";
+
+ctx.beginPath();
+ctx.arc(b.x,b.y,5,0,7);
+ctx.fill();
+
+});
+
+enemies.forEach(e=>{
+
+ctx.shadowBlur=25;
+ctx.shadowColor="red";
+ctx.fillStyle="#ff0044";
+
+ctx.beginPath();
+ctx.arc(e.x,e.y,e.r,0,7);
+ctx.fill();
+
+});
+
+particles.forEach(p=>{
+
+ctx.shadowBlur=10;
+ctx.shadowColor=p.color;
+
+ctx.fillStyle=p.color;
+
+ctx.globalAlpha=p.life/40;
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,3,0,7);
+ctx.fill();
+
+});
+
+ctx.globalAlpha=1;
+
+}
+
+function loop(){
+
+update();
+draw();
+
+requestAnimationFrame(loop);
+
+}
+
+loop();
+
+</script>
+
+</body>
+</html>
