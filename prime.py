@@ -12,10 +12,18 @@ for i in range (3, int(1/2 * userinput) ,2):
 
 if userinput%2==0:
     prime=False
+if userinput==0:
+    
 
-
-if prime:
+ if prime:
     print ("Prime")
+
+if userinput==0:
+    print ("Neither")
+if userinput==1:
+   print ("Neither")
+if userinput==2:
+   print ("Prime")
 
 
 else:
